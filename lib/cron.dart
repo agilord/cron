@@ -194,7 +194,8 @@ class _TaskSchedule {
       _overrun = true;
       return;
     }
-    _running = new Future.microtask(() => task());
+    _running = new Future.microtask(() => task())
+        .then((_) => null, onError: (_) => null);
     _running.whenComplete(() {
       _running = null;
       if (_overrun) {
