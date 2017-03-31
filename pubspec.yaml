@@ -1,6 +1,6 @@
 name: cron
 description: A cron-like time-based job scheduler.
-version: 0.0.1
+version: 0.0.2
 author: Istvan Soos <istvan.soos@agilord.com>
 
 homepage: https://github.com/agilord/cron
