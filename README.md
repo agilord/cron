@@ -1,5 +1,7 @@
 # A cron-like time-based job scheduler for Dart 
 
+Run tasks periodically at fixed times or intervals.
+
 ## Usage
 
 A simple usage example:

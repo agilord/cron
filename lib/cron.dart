@@ -144,11 +144,11 @@ List<int> _parseConstraint(dynamic constraint) {
           .toList();
     }
 
-    int singleValue = int.parse(constraint, onError: (_) => -1);
-    if (singleValue > -1) return [singleValue];
+    int singleValue = int.tryParse(constraint);
+    if (singleValue != null) return [singleValue];
 
     if (constraint.startsWith('*/')) {
-      int period = int.parse(constraint.substring(2), onError: (_) => -1);
+      int period = int.tryParse(constraint.substring(2)) ?? -1;
       if (period > 0) {
         return new List.generate(120 ~/ period, (i) => i * period);
       }
@@ -157,8 +157,8 @@ List<int> _parseConstraint(dynamic constraint) {
     if (constraint.contains('-')) {
       List<String> ranges = constraint.split('-');
       if (ranges.length == 2) {
-        int lower = int.parse(ranges.first, onError: (_) => -1);
-        int higher = int.parse(ranges.last, onError: (_) => -1);
+        int lower = int.tryParse(ranges.first) ?? -1;
+        int higher = int.tryParse(ranges.last) ?? -1;
         if (lower <= higher) {
           return new List.generate(higher - lower + 1, (i) => i + lower);
         }

@@ -1,6 +1,6 @@
 name: cron
-description: A cron-like time-based job scheduler.
-version: 0.0.2
+description: A time-based job scheduler similar to cron. Run tasks periodically at fixed times or intervals.
+version: 0.1.0
 author: Istvan Soos <istvan.soos@agilord.com>
 
 homepage: https://github.com/agilord/cron
