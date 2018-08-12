@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Dart 2 support.
+
 ## 0.1.0
 
 - Fix issues for Dart 2 compatibility.
