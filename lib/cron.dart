@@ -135,13 +135,12 @@ List<int> _parseConstraint(dynamic constraint) {
   if (constraint is List<int>) return constraint;
   if (constraint is String) {
     if (constraint == '*') return null;
-    List<String> parts = constraint.split(',');
+    final parts = constraint.split(',');
     if (parts.length > 1) {
-      return parts
-          .map(_parseConstraint)
-          .map((List<int> l) => l.toSet())
-          .fold(new Set(), (s1, s2) => s1..addAll(s2))
-          .toList();
+      final items =
+          parts.map(_parseConstraint).expand((list) => list).toSet().toList();
+      items.sort();
+      return items;
     }
 
     int singleValue = int.tryParse(constraint);

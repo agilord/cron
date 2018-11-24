@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Fixed a type-cast bug.
+
 ## 0.2.0
 
 - Dart 2 support.
