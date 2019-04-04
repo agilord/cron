@@ -13,7 +13,7 @@ abstract class Cron {
   factory Cron() => new _Cron();
 
   /// Schedules a [task] running specified by the [schedule].
-  void schedule(Schedule schedule, Task task);
+  ScheduledTask schedule(Schedule schedule, Task task);
 
   /// Closes the cron instance and doesn't accept new tasks anymore.
   Future close();
@@ -86,18 +86,25 @@ class Schedule {
   Schedule._(this.minutes, this.hours, this.days, this.months, this.weekdays);
 }
 
+abstract class ScheduledTask {
+  Schedule get schedule;
+  Future cancel();
+}
+
 const int _millisecondsPerMinute = 60 * 1000;
 
 class _Cron implements Cron {
   bool _closed = false;
   Timer _timer = null;
-  List<_TaskSchedule> _schedules = [];
+  List<_ScheduledTask> _schedules = [];
 
   @override
-  void schedule(Schedule schedule, Task task) {
+  ScheduledTask schedule(Schedule schedule, Task task) {
     if (_closed) throw 'Closed.';
-    _schedules.add(new _TaskSchedule(task, schedule));
+    final st = new _ScheduledTask(schedule, task);
+    _schedules.add(st);
     _scheduleNextTick();
+    return st;
   }
 
   @override
@@ -105,8 +112,8 @@ class _Cron implements Cron {
     _closed = true;
     _timer?.cancel();
     _timer = null;
-    for (_TaskSchedule schedule in _schedules) {
-      await schedule.close();
+    for (_ScheduledTask schedule in _schedules) {
+      await schedule.cancel();
     }
   }
 
@@ -122,7 +129,7 @@ class _Cron implements Cron {
   void _tick() {
     _timer = null;
     DateTime now = new DateTime.now();
-    for (_TaskSchedule schedule in _schedules) {
+    for (_ScheduledTask schedule in _schedules) {
       schedule.tick(now);
     }
     _scheduleNextTick();
@@ -167,15 +174,16 @@ List<int> _parseConstraint(dynamic constraint) {
   throw 'Unable to parse: $constraint';
 }
 
-class _TaskSchedule {
-  final Task task;
+class _ScheduledTask implements ScheduledTask {
+  @override
   final Schedule schedule;
+  final Task _task;
 
   bool _closed = false;
   Future _running;
   bool _overrun = false;
 
-  _TaskSchedule(this.task, this.schedule);
+  _ScheduledTask(this.schedule, this._task);
 
   void tick(DateTime now) {
     if (_closed) return;
@@ -193,7 +201,7 @@ class _TaskSchedule {
       _overrun = true;
       return;
     }
-    _running = new Future.microtask(() => task())
+    _running = new Future.microtask(() => _task())
         .then((_) => null, onError: (_) => null);
     _running.whenComplete(() {
       _running = null;
@@ -204,7 +212,8 @@ class _TaskSchedule {
     });
   }
 
-  Future close() async {
+  @override
+  Future cancel() async {
     _closed = true;
     _overrun = false;
     if (_running != null) {

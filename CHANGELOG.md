@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Schedule returns `ScheduledTask` which allows cancelling a scheduled task.
+
 ## 0.2.1
 
 - Fixed a type-cast bug.
