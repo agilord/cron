@@ -5,7 +5,7 @@ import 'dart:async';
 
 /// A task may return a Future to indicate when it is completed. If it wouldn't
 /// complete before [Cron] calls it again, it will be delayed.
-typedef Future Task();
+typedef Task = Future Function();
 
 /// A cron-like time-based job scheduler.
 abstract class Cron {
@@ -58,15 +58,15 @@ class Schedule {
       /// The weekdays a Task should be started.
       /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
       dynamic weekdays}) {
-    List<int> parsedMinutes =
+    final parsedMinutes =
         _parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59)?.toList();
-    List<int> parsedHours =
+    final parsedHours =
         _parseConstraint(hours)?.where((x) => x >= 0 && x <= 59)?.toList();
-    List<int> parsedDays =
+    final parsedDays =
         _parseConstraint(days)?.where((x) => x >= 1 && x <= 31)?.toList();
-    List<int> parsedMonths =
+    final parsedMonths =
         _parseConstraint(months)?.where((x) => x >= 1 && x <= 12)?.toList();
-    List<int> parsedWeekdays = _parseConstraint(weekdays)
+    final parsedWeekdays = _parseConstraint(weekdays)
         ?.where((x) => x >= 0 && x <= 7)
         ?.map((x) => x == 0 ? 7 : x)
         ?.toSet()
@@ -77,8 +77,7 @@ class Schedule {
 
   /// Parses the cron-formatted text and creates a schedule out of it.
   factory Schedule.parse(String cronFormat) {
-    List<List<int>> p =
-        cronFormat.split(RegExp('\\s+')).map(_parseConstraint).toList();
+    final p = cronFormat.split(RegExp('\\s+')).map(_parseConstraint).toList();
     assert(p.length == 5);
     return Schedule._(p[0], p[1], p[2], p[3], p[4]);
   }
@@ -96,11 +95,11 @@ const int _millisecondsPerMinute = 60 * 1000;
 class _Cron implements Cron {
   bool _closed = false;
   Timer _timer;
-  List<_ScheduledTask> _schedules = [];
+  final _schedules = <_ScheduledTask>[];
 
   @override
   ScheduledTask schedule(Schedule schedule, Task task) {
-    if (_closed) throw 'Closed.';
+    if (_closed) throw Exception('Closed.');
     final st = _ScheduledTask(schedule, task);
     _schedules.add(st);
     _scheduleNextTick();
@@ -112,7 +111,7 @@ class _Cron implements Cron {
     _closed = true;
     _timer?.cancel();
     _timer = null;
-    for (_ScheduledTask schedule in _schedules) {
+    for (final schedule in _schedules) {
       await schedule.cancel();
     }
   }
@@ -120,16 +119,16 @@ class _Cron implements Cron {
   void _scheduleNextTick() {
     if (_closed) return;
     if (_timer != null || _schedules.isEmpty) return;
-    DateTime now = DateTime.now();
-    int ms = _millisecondsPerMinute -
+    final now = DateTime.now();
+    final ms = _millisecondsPerMinute -
         (now.millisecondsSinceEpoch % _millisecondsPerMinute);
     _timer = Timer(Duration(milliseconds: ms), _tick);
   }
 
   void _tick() {
     _timer = null;
-    DateTime now = DateTime.now();
-    for (_ScheduledTask schedule in _schedules) {
+    final now = DateTime.now();
+    for (final schedule in _schedules) {
       schedule.tick(now);
     }
     _scheduleNextTick();
@@ -150,28 +149,28 @@ List<int> _parseConstraint(dynamic constraint) {
       return items;
     }
 
-    int singleValue = int.tryParse(constraint);
+    final singleValue = int.tryParse(constraint);
     if (singleValue != null) return [singleValue];
 
     if (constraint.startsWith('*/')) {
-      int period = int.tryParse(constraint.substring(2)) ?? -1;
+      final period = int.tryParse(constraint.substring(2)) ?? -1;
       if (period > 0) {
         return List.generate(120 ~/ period, (i) => i * period);
       }
     }
 
     if (constraint.contains('-')) {
-      List<String> ranges = constraint.split('-');
+      final ranges = constraint.split('-');
       if (ranges.length == 2) {
-        int lower = int.tryParse(ranges.first) ?? -1;
-        int higher = int.tryParse(ranges.last) ?? -1;
+        final lower = int.tryParse(ranges.first) ?? -1;
+        final higher = int.tryParse(ranges.last) ?? -1;
         if (lower <= higher) {
           return List.generate(higher - lower + 1, (i) => i + lower);
         }
       }
     }
   }
-  throw 'Unable to parse: $constraint';
+  throw Exception('Unable to parse: $constraint');
 }
 
 class _ScheduledTask implements ScheduledTask {
@@ -201,8 +200,8 @@ class _ScheduledTask implements ScheduledTask {
       _overrun = true;
       return;
     }
-    _running = Future.microtask(() => _task())
-        .then((_) => null, onError: (_) => null);
+    _running =
+        Future.microtask(() => _task()).then((_) => null, onError: (_) => null);
     _running.whenComplete(() {
       _running = null;
       if (_overrun) {

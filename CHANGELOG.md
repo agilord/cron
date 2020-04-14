@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+- Updated code style and using latest pedantic lints.
+
 ## 0.2.2
 
 - Schedule returns `ScheduledTask` which allows cancelling a scheduled task.
