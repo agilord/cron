@@ -21,6 +21,9 @@ abstract class Cron {
 
 /// The cron schedule.
 class Schedule {
+  /// The seconds a Task should be started.
+  final List<int> seconds;
+
   /// The minutes a Task should be started.
   final List<int> minutes;
 
@@ -38,6 +41,10 @@ class Schedule {
 
   factory Schedule(
       {
+
+      /// The seconds a Task should be started.
+      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+      dynamic seconds,
 
       /// The minutes a Task should be started.
       /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
@@ -58,6 +65,8 @@ class Schedule {
       /// The weekdays a Task should be started.
       /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
       dynamic weekdays}) {
+    final parsedSeconds =
+        _parseConstraint(seconds)?.where((x) => x >= 0 && x <= 59)?.toList();
     final parsedMinutes =
         _parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59)?.toList();
     final parsedHours =
@@ -71,18 +80,19 @@ class Schedule {
         ?.map((x) => x == 0 ? 7 : x)
         ?.toSet()
         ?.toList();
-    return Schedule._(
-        parsedMinutes, parsedHours, parsedDays, parsedMonths, parsedWeekdays);
+    return Schedule._(parsedSeconds, parsedMinutes, parsedHours, parsedDays,
+        parsedMonths, parsedWeekdays);
   }
 
   /// Parses the cron-formatted text and creates a schedule out of it.
   factory Schedule.parse(String cronFormat) {
     final p = cronFormat.split(RegExp('\\s+')).map(_parseConstraint).toList();
-    assert(p.length == 5);
-    return Schedule._(p[0], p[1], p[2], p[3], p[4]);
+    assert(p.length == 6);
+    return Schedule._(p[0], p[1], p[2], p[3], p[4], p[5]);
   }
 
-  Schedule._(this.minutes, this.hours, this.days, this.months, this.weekdays);
+  Schedule._(this.seconds, this.minutes, this.hours, this.days, this.months,
+      this.weekdays);
 }
 
 abstract class ScheduledTask {
@@ -90,7 +100,7 @@ abstract class ScheduledTask {
   Future cancel();
 }
 
-const int _millisecondsPerMinute = 60 * 1000;
+const int _millisecondsPerSecond = 1000;
 
 class _Cron implements Cron {
   bool _closed = false;
@@ -120,8 +130,8 @@ class _Cron implements Cron {
     if (_closed) return;
     if (_timer != null || _schedules.isEmpty) return;
     final now = DateTime.now();
-    final ms = _millisecondsPerMinute -
-        (now.millisecondsSinceEpoch % _millisecondsPerMinute);
+    final ms = _millisecondsPerSecond -
+        (now.millisecondsSinceEpoch % _millisecondsPerSecond);
     _timer = Timer(Duration(milliseconds: ms), _tick);
   }
 
@@ -186,6 +196,7 @@ class _ScheduledTask implements ScheduledTask {
 
   void tick(DateTime now) {
     if (_closed) return;
+    if (schedule?.seconds?.contains(now.second) == false) return;
     if (schedule?.minutes?.contains(now.minute) == false) return;
     if (schedule?.hours?.contains(now.hour) == false) return;
     if (schedule?.days?.contains(now.day) == false) return;
