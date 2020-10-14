@@ -87,8 +87,10 @@ class Schedule {
   /// Parses the cron-formatted text and creates a schedule out of it.
   factory Schedule.parse(String cronFormat) {
     final p = cronFormat.split(RegExp('\\s+')).map(_parseConstraint).toList();
-    assert(p.length == 6);
-    return Schedule._(p[0], p[1], p[2], p[3], p[4], p[5]);
+    assert(p.length == 5 || p.length == 6);
+    return p.length == 5
+        ? Schedule._([0], p[0], p[1], p[2], p[3], p[4])
+        : Schedule._(p[0], p[1], p[2], p[3], p[4], p[5]);
   }
 
   Schedule._(this.seconds, this.minutes, this.hours, this.days, this.months,
