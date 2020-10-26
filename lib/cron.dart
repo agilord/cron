@@ -132,8 +132,12 @@ class _Cron implements Cron {
     if (_closed) return;
     if (_timer != null || _schedules.isEmpty) return;
     final now = DateTime.now();
-    final ms = _millisecondsPerSecond -
-        (now.millisecondsSinceEpoch % _millisecondsPerSecond);
+    final isTickMinute = _schedules.any((task) =>
+        (task.schedule.seconds?.contains(0) ?? false) &&
+        task.schedule.seconds?.length == 1);
+    final ms = (isTickMinute ? 60 : 1) * _millisecondsPerSecond -
+        (now.millisecondsSinceEpoch %
+            ((isTickMinute ? 60 : 1) * _millisecondsPerSecond));
     _timer = Timer(Duration(milliseconds: ms), _tick);
   }
 
