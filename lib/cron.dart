@@ -7,7 +7,7 @@ import 'src/constraint_parser.dart';
 
 /// A task may return a Future to indicate when it is completed. If it wouldn't
 /// complete before [Cron] calls it again, it will be delayed.
-typedef Task = Future Function();
+typedef Task = FutureOr<dynamic> Function();
 
 /// A cron-like time-based job scheduler.
 abstract class Cron {

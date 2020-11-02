@@ -3,6 +3,7 @@
 ## 0.2.4
 
 - Support for `seconds` and 6-part String format.
+- `FutureOr<dynamic>` is accepted as a `Task` callback.
 
 ## 0.2.3
 
