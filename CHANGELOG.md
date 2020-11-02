@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.4
+
+- Support for `seconds` and 6-part String format.
+
 ## 0.2.3
 
 - Updated code style and using latest pedantic lints.

@@ -3,6 +3,8 @@
 
 import 'dart:async';
 
+import 'src/constraint_parser.dart';
+
 /// A task may return a Future to indicate when it is completed. If it wouldn't
 /// complete before [Cron] calls it again, it will be delayed.
 typedef Task = Future Function();
@@ -39,43 +41,42 @@ class Schedule {
   /// The weekdays a Task should be started.
   final List<int> weekdays;
 
-  factory Schedule(
-      {
+  factory Schedule({
+    /// The seconds a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic seconds,
 
-      /// The seconds a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic seconds,
+    /// The minutes a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic minutes,
 
-      /// The minutes a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic minutes,
+    /// The hours a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic hours,
 
-      /// The hours a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic hours,
+    /// The days a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic days,
 
-      /// The days a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic days,
+    /// The months a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic months,
 
-      /// The months a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic months,
-
-      /// The weekdays a Task should be started.
-      /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
-      dynamic weekdays}) {
+    /// The weekdays a Task should be started.
+    /// Can be one of `int`, `List<int>` or `String` or `null` (= match all).
+    dynamic weekdays,
+  }) {
     final parsedSeconds =
-        _parseConstraint(seconds)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(seconds)?.where((x) => x >= 0 && x <= 59)?.toList();
     final parsedMinutes =
-        _parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59)?.toList();
     final parsedHours =
-        _parseConstraint(hours)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(hours)?.where((x) => x >= 0 && x <= 59)?.toList();
     final parsedDays =
-        _parseConstraint(days)?.where((x) => x >= 1 && x <= 31)?.toList();
+        parseConstraint(days)?.where((x) => x >= 1 && x <= 31)?.toList();
     final parsedMonths =
-        _parseConstraint(months)?.where((x) => x >= 1 && x <= 12)?.toList();
-    final parsedWeekdays = _parseConstraint(weekdays)
+        parseConstraint(months)?.where((x) => x >= 1 && x <= 12)?.toList();
+    final parsedWeekdays = parseConstraint(weekdays)
         ?.where((x) => x >= 0 && x <= 7)
         ?.map((x) => x == 0 ? 7 : x)
         ?.toSet()
@@ -86,15 +87,29 @@ class Schedule {
 
   /// Parses the cron-formatted text and creates a schedule out of it.
   factory Schedule.parse(String cronFormat) {
-    final p = cronFormat.split(RegExp('\\s+')).map(_parseConstraint).toList();
+    final p = cronFormat.split(RegExp('\\s+'));
     assert(p.length == 5 || p.length == 6);
-    return p.length == 5
-        ? Schedule._([0], p[0], p[1], p[2], p[3], p[4])
-        : Schedule._(p[0], p[1], p[2], p[3], p[4], p[5]);
+    final parts = [
+      if (p.length == 5) null,
+      ...p,
+    ];
+    return Schedule(
+      seconds: parts[0],
+      minutes: parts[1],
+      hours: parts[2],
+      days: parts[3],
+      months: parts[4],
+      weekdays: parts[5],
+    );
   }
 
   Schedule._(this.seconds, this.minutes, this.hours, this.days, this.months,
       this.weekdays);
+
+  bool get _hasSeconds =>
+      seconds != null &&
+      seconds.isNotEmpty &&
+      (seconds.length != 1 || !seconds.contains(0));
 }
 
 abstract class ScheduledTask {
@@ -132,9 +147,7 @@ class _Cron implements Cron {
     if (_closed) return;
     if (_timer != null || _schedules.isEmpty) return;
     final now = DateTime.now();
-    final isTickMinute = _schedules.any((task) =>
-        (task.schedule.seconds?.contains(0) ?? false) &&
-        task.schedule.seconds?.length == 1);
+    final isTickMinute = _schedules.any((task) => !task.schedule._hasSeconds);
     final ms = (isTickMinute ? 60 : 1) * _millisecondsPerSecond -
         (now.millisecondsSinceEpoch %
             ((isTickMinute ? 60 : 1) * _millisecondsPerSecond));
@@ -149,44 +162,6 @@ class _Cron implements Cron {
     }
     _scheduleNextTick();
   }
-}
-
-List<int> _parseConstraint(dynamic constraint) {
-  if (constraint == null) return null;
-  if (constraint is int) return [constraint];
-  if (constraint is List<int>) return constraint;
-  if (constraint is String) {
-    if (constraint == '*') return null;
-    final parts = constraint.split(',');
-    if (parts.length > 1) {
-      final items =
-          parts.map(_parseConstraint).expand((list) => list).toSet().toList();
-      items.sort();
-      return items;
-    }
-
-    final singleValue = int.tryParse(constraint);
-    if (singleValue != null) return [singleValue];
-
-    if (constraint.startsWith('*/')) {
-      final period = int.tryParse(constraint.substring(2)) ?? -1;
-      if (period > 0) {
-        return List.generate(120 ~/ period, (i) => i * period);
-      }
-    }
-
-    if (constraint.contains('-')) {
-      final ranges = constraint.split('-');
-      if (ranges.length == 2) {
-        final lower = int.tryParse(ranges.first) ?? -1;
-        final higher = int.tryParse(ranges.last) ?? -1;
-        if (lower <= higher) {
-          return List.generate(higher - lower + 1, (i) => i + lower);
-        }
-      }
-    }
-  }
-  throw Exception('Unable to parse: $constraint');
 }
 
 class _ScheduledTask implements ScheduledTask {
