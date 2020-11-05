@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.5
+
+- Added support for special characters `?` and `L`
+- Factory of cron params into single classes to increase maintenance and readability
+
 ## 0.2.4
 
 - Support for `seconds` and 6-part String format.
