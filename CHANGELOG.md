@@ -2,7 +2,7 @@
 
 ## 0.2.5
 
-- Added support for special characters `?` and `L`
+- Added support for special characters `?` and `L` and a 7th attribute for the `year`
 - Factory of cron params into single classes to increase maintenance and readability
 
 ## 0.2.4
