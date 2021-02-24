@@ -5,6 +5,7 @@ build/
 packages
 # Remove the following pattern if you wish to check in your lock file
 pubspec.lock
+.dart_tool
 
 # Files created by dart2js
 *.dart.js
@@ -21,3 +22,4 @@ doc/api/
 *.iml
 *.ipr
 *.iws
+
