@@ -24,22 +24,22 @@ abstract class Cron {
 /// The cron schedule.
 class Schedule {
   /// The seconds a Task should be started.
-  final List<int> seconds;
+  final List<int>? seconds;
 
   /// The minutes a Task should be started.
-  final List<int> minutes;
+  final List<int>? minutes;
 
   /// The hours a Task should be started.
-  final List<int> hours;
+  final List<int>? hours;
 
   /// The days a Task should be started.
-  final List<int> days;
+  final List<int>? days;
 
   /// The months a Task should be started.
-  final List<int> months;
+  final List<int>? months;
 
   /// The weekdays a Task should be started.
-  final List<int> weekdays;
+  final List<int>? weekdays;
 
   factory Schedule({
     /// The seconds a Task should be started.
@@ -67,20 +67,20 @@ class Schedule {
     dynamic weekdays,
   }) {
     final parsedSeconds =
-        parseConstraint(seconds)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(seconds)?.where((x) => x >= 0 && x <= 59).toList();
     final parsedMinutes =
-        parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59).toList();
     final parsedHours =
-        parseConstraint(hours)?.where((x) => x >= 0 && x <= 59)?.toList();
+        parseConstraint(hours)?.where((x) => x >= 0 && x <= 59).toList();
     final parsedDays =
-        parseConstraint(days)?.where((x) => x >= 1 && x <= 31)?.toList();
+        parseConstraint(days)?.where((x) => x >= 1 && x <= 31).toList();
     final parsedMonths =
-        parseConstraint(months)?.where((x) => x >= 1 && x <= 12)?.toList();
+        parseConstraint(months)?.where((x) => x >= 1 && x <= 12).toList();
     final parsedWeekdays = parseConstraint(weekdays)
         ?.where((x) => x >= 0 && x <= 7)
-        ?.map((x) => x == 0 ? 7 : x)
-        ?.toSet()
-        ?.toList();
+        .map((x) => x == 0 ? 7 : x)
+        .toSet()
+        .toList();
     return Schedule._(parsedSeconds, parsedMinutes, parsedHours, parsedDays,
         parsedMonths, parsedWeekdays);
   }
@@ -108,8 +108,8 @@ class Schedule {
 
   bool get _hasSeconds =>
       seconds != null &&
-      seconds.isNotEmpty &&
-      (seconds.length != 1 || !seconds.contains(0));
+      seconds!.isNotEmpty &&
+      (seconds!.length != 1 || !seconds!.contains(0));
 }
 
 abstract class ScheduledTask {
@@ -121,7 +121,7 @@ const int _millisecondsPerSecond = 1000;
 
 class _Cron implements Cron {
   bool _closed = false;
-  Timer _timer;
+  Timer? _timer;
   final _schedules = <_ScheduledTask>[];
 
   @override
@@ -170,19 +170,19 @@ class _ScheduledTask implements ScheduledTask {
   final Task _task;
 
   bool _closed = false;
-  Future _running;
+  Future? _running;
   bool _overrun = false;
 
   _ScheduledTask(this.schedule, this._task);
 
   void tick(DateTime now) {
     if (_closed) return;
-    if (schedule?.seconds?.contains(now.second) == false) return;
-    if (schedule?.minutes?.contains(now.minute) == false) return;
-    if (schedule?.hours?.contains(now.hour) == false) return;
-    if (schedule?.days?.contains(now.day) == false) return;
-    if (schedule?.months?.contains(now.month) == false) return;
-    if (schedule?.weekdays?.contains(now.weekday) == false) return;
+    if (schedule.seconds?.contains(now.second) == false) return;
+    if (schedule.minutes?.contains(now.minute) == false) return;
+    if (schedule.hours?.contains(now.hour) == false) return;
+    if (schedule.days?.contains(now.day) == false) return;
+    if (schedule.months?.contains(now.month) == false) return;
+    if (schedule.weekdays?.contains(now.weekday) == false) return;
     _run();
   }
 
@@ -194,7 +194,7 @@ class _ScheduledTask implements ScheduledTask {
     }
     _running =
         Future.microtask(() => _task()).then((_) => null, onError: (_) => null);
-    _running.whenComplete(() {
+    _running!.whenComplete(() {
       _running = null;
       if (_overrun) {
         _overrun = false;

@@ -1,4 +1,4 @@
-List<int> parseConstraint(dynamic constraint) {
+List<int>? parseConstraint(dynamic constraint) {
   if (constraint == null) return null;
   if (constraint is int) return [constraint];
   if (constraint is List<int>) return constraint;
@@ -7,7 +7,7 @@ List<int> parseConstraint(dynamic constraint) {
     final parts = constraint.split(',');
     if (parts.length > 1) {
       final items =
-      parts.map(parseConstraint).expand((list) => list).toSet().toList();
+      parts.map(parseConstraint).expand((list) => list!).toSet().toList();
       items.sort();
       return items;
     }
