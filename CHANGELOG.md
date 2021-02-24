@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.0
+
+- Null-safety support (by [bsutton](https://github.com/bsutton)).
+
 ## 0.2.4
 
 - Support for `seconds` and 6-part String format.
