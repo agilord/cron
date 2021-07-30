@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+- Fixed seconds vs minutes ticks issue - #22
+
 ## 0.3.0
 
 - Null-safety support (by [bsutton](https://github.com/bsutton)).
