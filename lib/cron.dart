@@ -5,6 +5,8 @@ import 'dart:async';
 
 import 'src/constraint_parser.dart';
 
+final _whitespacesRegExp = RegExp('\\s+');
+
 /// A task may return a Future to indicate when it is completed. If it wouldn't
 /// complete before [Cron] calls it again, it will be delayed.
 typedef Task = FutureOr<dynamic> Function();
@@ -87,7 +89,10 @@ class Schedule {
 
   /// Parses the cron-formatted text and creates a schedule out of it.
   factory Schedule.parse(String cronFormat) {
-    final p = cronFormat.split(RegExp('\\s+'));
+    final p = cronFormat
+        .split(_whitespacesRegExp)
+        .where((p) => p.isNotEmpty)
+        .toList();
     assert(p.length == 5 || p.length == 6);
     final parts = [
       if (p.length == 5) null,

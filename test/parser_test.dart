@@ -26,6 +26,16 @@ void main() {
       expect(schedule.weekdays, isNull);
     });
 
+    test('5 parts with extra space: 0,1 0 * * * ', () {
+      final schedule = Schedule.parse('0,1 0 * * * ');
+      expect(schedule.seconds, isNull);
+      expect(schedule.minutes, [0, 1]);
+      expect(schedule.hours, [0]);
+      expect(schedule.days, isNull);
+      expect(schedule.months, isNull);
+      expect(schedule.weekdays, isNull);
+    });
+
     test('6 parts', () {
       final schedule = Schedule.parse('1,30-31 1 13 */2 3-6 2,4');
       expect(schedule.seconds, [1, 30, 31]);
