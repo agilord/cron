@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0
+
+- Using [clock](https://pub.dev/packages/clock) to allow mocking time (by [pescuma](https://github.com/pescuma)).
+
 ## 0.3.2
 
 - Fixed parsing schedules with extra whitespace at the beginning or the end.
