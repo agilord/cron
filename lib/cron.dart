@@ -45,7 +45,8 @@ class Schedule {
   /// The weekdays a Task should be started.
   final List<int>? weekdays;
 
-  bool runAt(DateTime time) {
+  /// Test if this schedule should run at the specified time.
+  bool shouldRunAt(DateTime time) {
     if (seconds?.contains(time.second) == false) return false;
     if (minutes?.contains(time.minute) == false) return false;
     if (hours?.contains(time.hour) == false) return false;
@@ -193,7 +194,7 @@ class _ScheduledTask implements ScheduledTask {
 
   void tick(DateTime now) {
     if (_closed) return;
-    if (!schedule.runAt(now)) return;
+    if (!schedule.shouldRunAt(now)) return;
     _run();
   }
 
