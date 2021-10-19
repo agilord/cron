@@ -7,7 +7,7 @@ List<int>? parseConstraint(dynamic constraint) {
     final parts = constraint.split(',');
     if (parts.length > 1) {
       final items =
-      parts.map(parseConstraint).expand((list) => list!).toSet().toList();
+          parts.map(parseConstraint).expand((list) => list!).toSet().toList();
       items.sort();
       return items;
     }
