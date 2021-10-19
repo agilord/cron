@@ -3,6 +3,8 @@
 
 import 'dart:async';
 
+import 'package:clock/clock.dart';
+
 import 'src/constraint_parser.dart';
 
 final _whitespacesRegExp = RegExp('\\s+');
@@ -42,6 +44,16 @@ class Schedule {
 
   /// The weekdays a Task should be started.
   final List<int>? weekdays;
+
+  /// Test if this schedule should run at the specified time.
+  bool shouldRunAt(DateTime time) {
+    if (seconds?.contains(time.second) == false) return false;
+    if (minutes?.contains(time.minute) == false) return false;
+    if (hours?.contains(time.hour) == false) return false;
+    if (days?.contains(time.day) == false) return false;
+    if (months?.contains(time.month) == false) return false;
+    return true;
+  }
 
   factory Schedule({
     /// The seconds a Task should be started.
@@ -151,7 +163,7 @@ class _Cron implements Cron {
   void _scheduleNextTick() {
     if (_closed) return;
     if (_timer != null || _schedules.isEmpty) return;
-    final now = DateTime.now();
+    final now = clock.now();
     final isTickSeconds = _schedules.any((task) => task.schedule._hasSeconds);
     final ms = (isTickSeconds ? 1 : 60) * _millisecondsPerSecond -
         (now.millisecondsSinceEpoch %
@@ -161,7 +173,7 @@ class _Cron implements Cron {
 
   void _tick() {
     _timer = null;
-    final now = DateTime.now();
+    final now = clock.now();
     for (final schedule in _schedules) {
       schedule.tick(now);
     }
@@ -182,12 +194,7 @@ class _ScheduledTask implements ScheduledTask {
 
   void tick(DateTime now) {
     if (_closed) return;
-    if (schedule.seconds?.contains(now.second) == false) return;
-    if (schedule.minutes?.contains(now.minute) == false) return;
-    if (schedule.hours?.contains(now.hour) == false) return;
-    if (schedule.days?.contains(now.day) == false) return;
-    if (schedule.months?.contains(now.month) == false) return;
-    if (schedule.weekdays?.contains(now.weekday) == false) return;
+    if (!schedule.shouldRunAt(now)) return;
     _run();
   }
 
