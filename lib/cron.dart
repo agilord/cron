@@ -51,6 +51,7 @@ class Schedule {
     if (minutes?.contains(time.minute) == false) return false;
     if (hours?.contains(time.hour) == false) return false;
     if (days?.contains(time.day) == false) return false;
+    if (weekdays?.contains(time.weekday) == false) return false;
     if (months?.contains(time.month) == false) return false;
     return true;
   }
