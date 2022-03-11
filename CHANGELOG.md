@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- Fixed weekday check. [#32](https://github.com/agilord/cron/pull/32) by [Langley1996](https://github.com/Langley1996).
+
 ## 0.4.0
 
 - Using [clock](https://pub.dev/packages/clock) to allow mocking time (by [pescuma](https://github.com/pescuma)).
