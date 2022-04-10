@@ -1,6 +1,6 @@
 import 'package:cron/cron.dart';
 
-void main() async {
+Future<void> main() async {
   final cron = Cron();
 
   try {
