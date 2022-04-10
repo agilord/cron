@@ -86,7 +86,7 @@ class Schedule {
     final parsedMinutes =
         parseConstraint(minutes)?.where((x) => x >= 0 && x <= 59).toList();
     final parsedHours =
-        parseConstraint(hours)?.where((x) => x >= 0 && x <= 59).toList();
+        parseConstraint(hours)?.where((x) => x >= 0 && x <= 23).toList();
     final parsedDays =
         parseConstraint(days)?.where((x) => x >= 1 && x <= 31).toList();
     final parsedMonths =

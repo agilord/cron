@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.0
+
+- Improved time parsing.　[#21](https://github.com/agilord/cron/issues/21)
+
 ## 0.4.1
 
 - Fixed weekday check. [#32](https://github.com/agilord/cron/pull/32) by [Langley1996](https://github.com/Langley1996).
