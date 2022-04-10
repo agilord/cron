@@ -1,4 +1,4 @@
-# A cron-like time-based job scheduler for Dart 
+# A cron-like time-based job scheduler for Dart
 
 Run tasks periodically at fixed times or intervals.
 
@@ -6,17 +6,21 @@ Run tasks periodically at fixed times or intervals.
 
 A simple usage example:
 
-    import 'package:cron/cron.dart';
+```dart
+import 'package:cron/cron.dart';
 
-    main() {
-      final cron = Cron();
-      cron.schedule(Schedule.parse('*/3 * * * *'), () async {
-        print('every three minutes');
-      });
-      cron.schedule(Schedule.parse('8-11 * * * *'), () async {
-        print('between every 8 and 11 minutes');
-      });
-    }
+main() {
+  final cron = Cron();
+
+  cron.schedule(Schedule.parse('*/3 * * * *'), () async {
+    print('every three minutes');
+  });
+
+  cron.schedule(Schedule.parse('8-11 * * * *'), () async {
+    print('between every 8 and 11 minutes');
+  });
+}
+```
 
 ## Links
 

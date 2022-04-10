@@ -1,3 +1,5 @@
+import 'package:cron/src/schedule_parse_exception.dart';
+
 List<int>? parseConstraint(dynamic constraint) {
   if (constraint == null) return null;
   if (constraint is int) return [constraint];
@@ -33,5 +35,6 @@ List<int>? parseConstraint(dynamic constraint) {
       }
     }
   }
-  throw Exception('Unable to parse: $constraint');
+
+  throw ScheduleParseException('Unable to parse: $constraint');
 }

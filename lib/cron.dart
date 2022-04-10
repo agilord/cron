@@ -7,6 +7,8 @@ import 'package:clock/clock.dart';
 
 import 'src/constraint_parser.dart';
 
+export 'package:cron/src/schedule_parse_exception.dart';
+
 final _whitespacesRegExp = RegExp('\\s+');
 
 /// A task may return a Future to indicate when it is completed. If it wouldn't
