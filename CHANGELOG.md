@@ -2,7 +2,8 @@
 
 ## 0.5.0
 
-- Improved time parsing.　[#21](https://github.com/agilord/cron/issues/21)
+- Improved time parsing.　[#21](https://github.com/agilord/cron/issues/21) by [myConsciousness](https://github.com/myConsciousness)
+- Improved exception that occurred when parsing cron-like string. Currently throws `ScheduleParseException` if parsing fails. [[#29](https://github.com/agilord/cron/issues/29)] by [myConsciousness](https://github.com/myConsciousness)
 
 ## 0.4.1
 
