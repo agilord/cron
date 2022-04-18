@@ -1,4 +1,4 @@
-import 'package:cron/src/schedule_parse_exception.dart';
+import 'package:cron/src/constraint_parser.dart';
 import 'package:test/test.dart';
 
 void main() {
