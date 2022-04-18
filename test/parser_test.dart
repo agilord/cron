@@ -12,6 +12,13 @@ void main() {
     test('parse star constraint', () {
       expect(parseConstraint('*/14'), [0, 14, 28, 42, 56, 70, 84, 98]);
     });
+
+    test('parse unsupported format', () {
+      expect(
+        () => parseConstraint('unsupported_format'),
+        throwsA(isA<ScheduleParseException>()),
+      );
+    });
   });
 
   group('Schedule.parse', () {
