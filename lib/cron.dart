@@ -7,7 +7,7 @@ import 'package:clock/clock.dart';
 
 import 'src/constraint_parser.dart';
 
-export 'package:cron/src/schedule_parse_exception.dart';
+export 'src/constraint_parser.dart' show ScheduleParseException;
 
 final _whitespacesRegExp = RegExp('\\s+');
 

@@ -1,5 +1,3 @@
-import 'package:cron/src/schedule_parse_exception.dart';
-
 List<int>? parseConstraint(dynamic constraint) {
   if (constraint == null) return null;
   if (constraint is int) return [constraint];
@@ -37,4 +35,11 @@ List<int>? parseConstraint(dynamic constraint) {
   }
 
   throw ScheduleParseException('Unable to parse: $constraint');
+}
+
+/// Exception thrown when a cron data does not have an expected
+/// format and cannot be parsed or processed.
+class ScheduleParseException extends FormatException {
+  /// Creates a new `FormatException` with an optional error [message].
+  ScheduleParseException([String message = '']) : super(message);
 }
