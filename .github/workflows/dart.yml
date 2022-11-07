@@ -46,4 +46,4 @@ jobs:
       - name: publish
         run: |
           echo $PUB_TOKEN | base64
-          dart pub publish -f
+          dart pub publish -v -f
