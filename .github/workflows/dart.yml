@@ -13,6 +13,8 @@ on:
 
 jobs:
   build:
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +24,7 @@ jobs:
       # You can specify other versions if desired, see documentation here:
       # https://github.com/dart-lang/setup-dart/blob/main/README.md
       # - uses: dart-lang/setup-dart@v1
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      - uses: isoos/setup-dart@cde23bc2fdba8c3c38dadd501dee95e684c2bb86
 
       - name: Install dependencies
         run: dart pub get
@@ -40,3 +42,8 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+
+      - name: publish
+        run: |
+          echo $PUB_TOKEN | base64
+          dart pub publish -f

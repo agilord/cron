@@ -2,6 +2,9 @@
 
 Run tasks periodically at fixed times or intervals.
 
+NOTE: This package is not intended for the backround tasks scheduling
+of mobile applications.
+
 ## Usage
 
 A simple usage example:
