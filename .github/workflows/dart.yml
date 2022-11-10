@@ -45,5 +45,6 @@ jobs:
 
       - name: publish
         run: |
+          dart pub global activate -s git https://github.com/isoos/pub
           echo $PUB_TOKEN | base64
-          dart pub publish -v -f
+          dart pub global run pub publish -v -f
