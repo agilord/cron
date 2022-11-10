@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.1
+
+- Fixed scheduling issue. [#42](https://github.com/agilord/cron/issues/42) by [ccl0326](https://github.com/ccl0326)
+
 ## 0.5.0
 
 - Improved time parsing.　[#21](https://github.com/agilord/cron/issues/21) by [myConsciousness](https://github.com/myConsciousness)

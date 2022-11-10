@@ -193,11 +193,23 @@ class _ScheduledTask implements ScheduledTask {
   Future? _running;
   bool _overrun = false;
 
+  /// The datetime a Task last run.
+  DateTime lastTime = DateTime(0, 0, 0, 0, 0, 0, 0);
+
   _ScheduledTask(this.schedule, this._task);
 
   void tick(DateTime now) {
     if (_closed) return;
     if (!schedule.shouldRunAt(now)) return;
+    if ((schedule.seconds == null || lastTime.second == now.second) &&
+        (schedule.minutes == null || lastTime.minute == now.minute) &&
+        (schedule.hours == null || lastTime.hour == now.hour) &&
+        (schedule.days == null || lastTime.day == now.day) &&
+        (schedule.months == null || lastTime.month == now.month) &&
+        (schedule.weekdays == null || lastTime.weekday == now.weekday)) {
+      return;
+    }
+    lastTime = now;
     _run();
   }
 

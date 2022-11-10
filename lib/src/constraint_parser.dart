@@ -3,7 +3,8 @@ List<int>? parseConstraint(dynamic constraint) {
   if (constraint is int) return [constraint];
   if (constraint is List<int>) return constraint;
   if (constraint is String) {
-    if (constraint == '*' || constraint == '') return null;
+    if (constraint == '*') return List.generate(60, (i) => i);
+    if (constraint == '') return null;
     final parts = constraint.split(',');
     if (parts.length > 1) {
       final items =
