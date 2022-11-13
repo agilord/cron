@@ -30,7 +30,7 @@ void main() {
       expect(schedule.days,
           [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30]);
       expect(schedule.months, [3, 4, 5, 6]);
-      expect(schedule.weekdays, isNull);
+      expect(schedule.weekdays, [7, 1, 2, 3, 4, 5, 6]);
     });
 
     test('5 parts with extra space: 0,1 0 * * * ', () {
@@ -38,9 +38,9 @@ void main() {
       expect(schedule.seconds, isNull);
       expect(schedule.minutes, [0, 1]);
       expect(schedule.hours, [0]);
-      expect(schedule.days, isNull);
-      expect(schedule.months, isNull);
-      expect(schedule.weekdays, isNull);
+      expect(schedule.days, List.generate(31, (i) => i + 1));
+      expect(schedule.months, List.generate(12, (i) => i + 1));
+      expect(schedule.weekdays, [7, 1, 2, 3, 4, 5, 6]);
     });
 
     test('6 parts', () {
