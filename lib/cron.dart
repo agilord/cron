@@ -133,14 +133,13 @@ class Schedule {
 
   /// Converts the schedule into a cron-formatted string.
   String toCronString() {
-    final secondsStr = _convertToCronString(seconds);
     final minutesStr = _convertToCronString(minutes);
     final hoursStr = _convertToCronString(hours);
     final daysStr = _convertToCronString(days);
     final monthsStr = _convertToCronString(months);
     final weekdaysStr = _convertToCronString(weekdays);
 
-    return '$secondsStr $minutesStr $hoursStr $daysStr $monthsStr $weekdaysStr';
+    return '$minutesStr $hoursStr $daysStr $monthsStr $weekdaysStr';
   }
 
   String _convertToCronString(List<int>? list) {
