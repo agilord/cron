@@ -130,6 +130,26 @@ class Schedule {
       seconds != null &&
       seconds!.isNotEmpty &&
       (seconds!.length != 1 || !seconds!.contains(0));
+
+  /// Converts the schedule into a cron-formatted string.
+  String toCronString() {
+    final secondsStr = _convertToCronString(seconds);
+    final minutesStr = _convertToCronString(minutes);
+    final hoursStr = _convertToCronString(hours);
+    final daysStr = _convertToCronString(days);
+    final monthsStr = _convertToCronString(months);
+    final weekdaysStr = _convertToCronString(weekdays);
+
+    return '$secondsStr $minutesStr $hoursStr $daysStr $monthsStr $weekdaysStr';
+  }
+
+  String _convertToCronString(List<int>? list) {
+    if (list == null || list.isEmpty) {
+      return '*';
+    } else {
+      return list.join(',');
+    }
+  }
 }
 
 abstract class ScheduledTask {

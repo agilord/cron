@@ -1,17 +1,8 @@
 import 'package:cron/cron.dart';
 
-Future<void> main() async {
-  final cron = Cron();
+void main() {
+  print(Schedule.parse('3-5 * * * *').minutes); // [3, 4, 5]
 
-  try {
-    cron.schedule(Schedule.parse('*/6 * * * * *'), () {
-      print(DateTime.now());
-    });
-
-    await Future.delayed(Duration(seconds: 20));
-    await cron.close();
-  } on ScheduleParseException {
-    // "ScheduleParseException" is thrown if cron parsing is failed.
-    await cron.close();
-  }
+  print(Schedule(hours: 12, minutes: 25, weekdays: [2, 3])
+      .toCronString()); // * 25 12 * * 2,3
 }
