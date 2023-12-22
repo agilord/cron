@@ -46,7 +46,7 @@ void main() {
   test('should return correct cron format string.', () {
     expect(
       Schedule(hours: 13, minutes: 20, weekdays: [1, 2]).toCronString(),
-      '* 20 13 * * 1,2',
+      '20 13 * * 1,2',
     );
   });
 }

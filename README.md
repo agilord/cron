@@ -2,6 +2,8 @@
 
 Run tasks periodically at fixed times or intervals.
 
+[![pub package](https://img.shields.io/pub/v/cron.svg)](https://pub.dev/packages/cron)
+
 ## Usage
 
 A simple usage example:
