@@ -23,7 +23,7 @@ void main() {
 ```
 
 ## Cron parser
-You can easily create and parse [cron format](https://www.ibm.com/docs/en/db2oc?topic=task-unix-cron-format)
+You can easily create and parse [cron format](https://en.wikipedia.org/wiki/Cron)
 
 ```dart
 import 'package:cron/cron.dart';
