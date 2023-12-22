@@ -1,5 +1,5 @@
 <p align="center" width="100%">
-  <img width="50%" src="https://github.com/mbfakourii/cron/assets/20955005/6a8a8064-7167-462a-a485-36565641a71f"/>
+  <img width="50%" src="https://github.com/mbfakourii/cron/assets/20955005/6a8a8064-7167-462a-a485-36565641a71f" alt="logo"/>
 </p>
 
 # A cron-like time-based job scheduler for Dart
@@ -29,7 +29,7 @@ void main() {
 ```
 
 ## Cron parser
-You can easily create and parse [cron format](https://en.wikipedia.org/wiki/Cron)
+You can easily create and parse [cron format](https://en.wikipedia.org/wiki/Cron):
 
 ```dart
 import 'package:cron/cron.dart';
