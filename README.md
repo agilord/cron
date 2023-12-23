@@ -1,7 +1,3 @@
-<p align="center" width="100%">
-  <img width="50%" src="https://github.com/mbfakourii/cron/assets/20955005/6a8a8064-7167-462a-a485-36565641a71f" alt="logo"/>
-</p>
-
 # Cron
 
 Run tasks periodically at fixed times or intervals.
