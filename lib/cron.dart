@@ -133,19 +133,14 @@ class Schedule {
 
   /// Converts the schedule into a cron-formatted string.
   String toCronString({bool hasSecond = false}) {
-    final minutesStr = _convertToCronString(minutes);
-    final hoursStr = _convertToCronString(hours);
-    final daysStr = _convertToCronString(days);
-    final monthsStr = _convertToCronString(months);
-    final weekdaysStr = _convertToCronString(weekdays);
-
-    if (hasSecond) {
-      final secondsStr = _convertToCronString(seconds);
-
-      return '$secondsStr $minutesStr $hoursStr $daysStr $monthsStr $weekdaysStr';
-    } else {
-      return '$minutesStr $hoursStr $daysStr $monthsStr $weekdaysStr';
-    }
+    return [
+      if (hasSecond) _convertToCronString(seconds),
+      _convertToCronString(minutes),
+      _convertToCronString(hours),
+      _convertToCronString(days),
+      _convertToCronString(months),
+      _convertToCronString(weekdays),
+    ].join(' ');
   }
 
   String _convertToCronString(List<int>? list) {
