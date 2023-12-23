@@ -1,10 +1,7 @@
 name: cron
 description: A time-based job scheduler similar to cron. Run tasks periodically at fixed times or intervals.
 version: 0.6.0
-homepage: https://github.com/agilord/cron
 repository: https://github.com/agilord/cron
-issue_tracker: https://github.com/agilord/cron/issues
-documentation: https://github.com/agilord/cron#readme
 
 topics:
   - cron
@@ -14,7 +11,7 @@ topics:
   - cron-time
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
 
 dependencies:
   clock: ^1.1.1
