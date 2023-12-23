@@ -1,5 +1,5 @@
 #   https://www.dartlang.org/guides/language/analysis-options
-include: package:pedantic/analysis_options.yaml
+include: package:lints/recommended.yaml
 
 # http://dart-lang.github.io/linter/lints/options/options.html
 linter:
@@ -22,11 +22,9 @@ linter:
     - empty_statements
     - hash_and_equals
     - implementation_imports
-    - invariant_booleans
-    - iterable_contains_unrelated_type
+    - collection_methods_unrelated_type
     - library_names
     - library_prefixes
-    - list_remove_unrelated_type
     - literal_only_boolean_expressions
     - non_constant_identifier_names
     - one_member_abstracts
