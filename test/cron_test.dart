@@ -42,4 +42,11 @@ void main() {
       expect(count, 1);
     }, initialTime: DateTime(2000, 1, 1, 0, 0, 0, 0, 0));
   });
+
+  test('should return correct cron format string.', () {
+    expect(
+      Schedule(hours: 13, minutes: 20, weekdays: [1, 2]).toCronString(),
+      '20 13 * * 1,2',
+    );
+  });
 }

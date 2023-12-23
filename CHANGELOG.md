@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.0
+
+- Add `toCronString` function and improve package. [#50](https://github.com/agilord/cron/pull/50) by [mbfakourii](https://github.com/mbfakourii)
+
 ## 0.5.1
 
 - Fixed scheduling issue. [#42](https://github.com/agilord/cron/issues/42) by [ccl0326](https://github.com/ccl0326)
