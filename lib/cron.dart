@@ -4,8 +4,10 @@
 import 'dart:async';
 
 import 'package:clock/clock.dart';
+import 'package:cron/src/job.dart';
 
 import 'src/constraint_parser.dart';
+import 'src/job_manager.dart';
 
 export 'src/constraint_parser.dart' show ScheduleParseException;
 
@@ -25,6 +27,12 @@ abstract class Cron {
 
   /// Closes the cron instance and doesn't accept new tasks anymore.
   Future close();
+
+  /// Returns `true` if the task with the specified [taskId] is running.
+  bool isRunning(String taskId);
+
+  /// Returns the count of the jobs running with the specified [taskId].
+  int count(String taskId);
 }
 
 /// The cron schedule.
@@ -153,9 +161,12 @@ class Schedule {
 }
 
 abstract class ScheduledTask {
+
+  String get id;
+
   Schedule get schedule;
 
-  bool get isRunning;
+  Task get task;
 
   Future cancel();
 }
@@ -163,9 +174,13 @@ abstract class ScheduledTask {
 const int _millisecondsPerSecond = 1000;
 
 class _Cron implements Cron {
+
+  _Cron() : _jobManager = JobManager();
+
   bool _closed = false;
   Timer? _timer;
   final _schedules = <_ScheduledTask>[];
+  final JobManager _jobManager;
 
   @override
   ScheduledTask schedule(Schedule schedule, Task task) {
@@ -174,6 +189,16 @@ class _Cron implements Cron {
     _schedules.add(st);
     _scheduleNextTick();
     return st;
+  }
+
+  @override
+  bool isRunning(String taskId) {
+    return _jobManager.isRunning(taskId);
+  }
+
+  @override
+  int count(String taskId) {
+    return _jobManager.count(taskId);
   }
 
   @override
@@ -201,67 +226,67 @@ class _Cron implements Cron {
     _timer = null;
     final now = clock.now();
     for (final schedule in _schedules) {
-      schedule.tick(now);
+      final job = schedule.tick(now);
+      if (job != null) {
+        _jobManager.start(job, schedule.task);
+      }
     }
     _scheduleNextTick();
   }
 }
 
 class _ScheduledTask implements ScheduledTask {
+
+  @override
+  String get id => '${task.hashCode}';
+
   @override
   final Schedule schedule;
-  final Task _task;
-
-  bool _closed = false;
-  Future? _running;
-  bool _overrun = false;
 
   @override
-  bool get isRunning => _running != null;
+  final Task task;
+
+  bool _closed = false;
 
   /// The datetime a Task last run.
   DateTime lastTime = DateTime(0, 0, 0, 0, 0, 0, 0);
 
-  _ScheduledTask(this.schedule, this._task);
+  _ScheduledTask(this.schedule, this.task);
 
-  void tick(DateTime now) {
-    if (_closed) return;
-    if (!schedule.shouldRunAt(now)) return;
+  Job? tick(DateTime now) {
+    if (_closed) return null;
+    if (!schedule.shouldRunAt(now)) return null;
     if ((schedule.seconds == null || lastTime.second == now.second) &&
         (schedule.minutes == null || lastTime.minute == now.minute) &&
         (schedule.hours == null || lastTime.hour == now.hour) &&
         (schedule.days == null || lastTime.day == now.day) &&
         (schedule.months == null || lastTime.month == now.month) &&
         (schedule.weekdays == null || lastTime.weekday == now.weekday)) {
-      return;
+      return null;
     }
     lastTime = now;
-    _run();
+    return Job(taskId: id, id: '$id-${now.millisecondsSinceEpoch}');
   }
 
-  void _run() {
-    if (_closed) return;
-    if (_running != null) {
-      _overrun = true;
-      return;
-    }
-    _running =
-        Future.microtask(() => _task()).then((_) => null, onError: (_) => null);
-    _running!.whenComplete(() {
-      _running = null;
-      if (_overrun) {
-        _overrun = false;
-        _run();
-      }
-    });
-  }
+  // void _run() {
+  //   if (_closed) return;
+  //   if (_running != null) {
+  //     _overrun = true;
+  //     return;
+  //   }
+  //   _running =
+  //       Future.microtask(() => _task()).then((_) => null, onError: (_) => null);
+  //   _running!.whenComplete(() {
+  //     _running = null;
+  //     if (_overrun) {
+  //       _overrun = false;
+  //       _run();
+  //     }
+  //   });
+  // }
 
   @override
   Future<void> cancel() async {
     _closed = true;
-    _overrun = false;
-    if (_running != null) {
-      await _running;
-    }
   }
 }

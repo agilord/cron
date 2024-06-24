@@ -25,6 +25,7 @@ void main() {
 ```
 
 ## Cron parser
+
 You can easily create and parse [cron format](https://en.wikipedia.org/wiki/Cron):
 
 ```dart

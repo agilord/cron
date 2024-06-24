@@ -57,8 +57,7 @@ void main() {
 
       async.elapse(Duration(minutes: 10));
 
-      expect(schedule.isRunning, true);
-
+      expect(cron.isRunning(schedule.id), true);
       async.elapse(Duration(seconds: 10));
 
       expect(count, 10);

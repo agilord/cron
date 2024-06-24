@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.2
+
+- Add `JobManager` and `Job` making the `ScheduledTask` a template for the jobs. [#54](https://github.com/agilord/cron/pull/54) by [francescovallone](https://github.com/francescovallone)
+
 ## 0.6.1
 
 - Add `isRunning` property to `ScheduledTask` to check if the task is running. [#53](https://github.com/agilord/cron/pull/53) by [francescovallone](https://github.com/francescovallone)
