@@ -7,8 +7,7 @@ List<int>? parseConstraint(dynamic constraint) {
     if (constraint == '') return null;
     final parts = constraint.split(',');
     if (parts.length > 1) {
-      final items =
-          parts.map(parseConstraint).expand((list) => list!).toSet().toList();
+      final items = parts.map(parseConstraint).expand((list) => list!).toSet().toList();
       items.sort();
       return items;
     }
@@ -24,12 +23,27 @@ List<int>? parseConstraint(dynamic constraint) {
     }
 
     if (constraint.contains('-')) {
-      final ranges = constraint.split('-');
-      if (ranges.length == 2) {
-        final lower = int.tryParse(ranges.first) ?? -1;
-        final higher = int.tryParse(ranges.last) ?? -1;
-        if (lower <= higher) {
-          return List.generate(higher - lower + 1, (i) => i + lower);
+      if (constraint.contains('/')) {
+        final split = constraint.split('/');
+        final interval = int.tryParse(split.last) ?? -1;
+        if (interval > 0) {
+          final ranges = split.first.split('-');
+          if (ranges.length == 2) {
+            final lower = int.tryParse(ranges.first) ?? -1;
+            final higher = int.tryParse(ranges.last) ?? -1;
+            if (lower <= higher) {
+              return List.generate((higher - lower + 1) ~/ interval, (i) => i * interval + lower);
+            }
+          }
+        }
+      } else {
+        final ranges = constraint.split('-');
+        if (ranges.length == 2) {
+          final lower = int.tryParse(ranges.first) ?? -1;
+          final higher = int.tryParse(ranges.last) ?? -1;
+          if (lower <= higher) {
+            return List.generate(higher - lower + 1, (i) => i + lower);
+          }
         }
       }
     }
