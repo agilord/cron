@@ -43,7 +43,8 @@ void main() {
     }, initialTime: DateTime(2000, 1, 1, 0, 0, 0, 0, 0));
   });
 
-  test('when a Schedule is running, then the "running" value should be [true]', () {
+  test('when a Schedule is running, then the "running" value should be [true]',
+      () {
     fakeAsync((async) {
       final cron = Cron();
 
