@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.6.2
+
+- Added support for intervals like `1-12/2`. [#55](https://github.com/agilord/cron/pull/55) by [ysahn-aplayz](https://github.com/ysahn-aplayz)
+
 ## 0.6.1
 
 - Add `isRunning` property to `ScheduledTask` to check if the task is running. [#53](https://github.com/agilord/cron/pull/53) by [francescovallone](https://github.com/francescovallone)

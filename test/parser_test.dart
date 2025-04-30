@@ -13,6 +13,10 @@ void main() {
       expect(parseConstraint('*/14'), [0, 14, 28, 42, 56, 70, 84, 98]);
     });
 
+    test('parse interval constraint', () {
+      expect(parseConstraint('1-12/2'), [1, 3, 5, 7, 9, 11]);
+    });
+
     test('parse unsupported format', () {
       expect(
         () => parseConstraint('unsupported_format'),
