@@ -57,5 +57,5 @@ List<int>? parseConstraint(dynamic constraint) {
 /// format and cannot be parsed or processed.
 class ScheduleParseException extends FormatException {
   /// Creates a new `FormatException` with an optional error [message].
-  ScheduleParseException([String message = '']) : super(message);
+  ScheduleParseException([super.message]);
 }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.3
+- Support `ScheduledTask` management. see: example/jobs.dart.
+
 ## 0.6.2
 
 - Added support for intervals like `1-12/2`. [#55](https://github.com/agilord/cron/pull/55) by [ysahn-aplayz](https://github.com/ysahn-aplayz)
