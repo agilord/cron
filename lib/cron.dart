@@ -20,11 +20,28 @@ abstract class Cron {
   /// A cron-like time-based job scheduler.
   factory Cron() => _Cron();
 
-  /// Schedules a [task] running specified by the [schedule].
-  ScheduledTask schedule(Schedule schedule, Task task);
+  /// Schedules a [task] running specified by the [schedule], if [append].
+  ScheduledTask schedule(Schedule schedule, Task task, [bool append = false]);
 
   /// Closes the cron instance and doesn't accept new tasks anymore.
   Future close();
+
+  /// Update ScheduledTask [st] at position [index] in this list _schedules.
+  void updateAt(int index, ScheduledTask st) {}
+
+  /// Remove the ScheduledTask at position [index] from list _schedules.
+  void removeAt(int index) {}
+
+  /// The first index in the list _schedules if [test] is true,
+  /// if not found returns -1.
+  /// ```dart
+  /// // search schedule name = 'sched1234' in cron instance.
+  /// final index = cron.indexWhere((e) => e.schedule.name == 'sched1234');
+  /// ```
+  int indexWhere(bool Function(ScheduledTask e) test, [int start = 0]) => -1;
+
+  /// the number of ScheduledTask in the list _schedules.
+  int get count => 0;
 }
 
 /// The cron schedule.
@@ -46,6 +63,9 @@ class Schedule {
 
   /// The weekdays a Task should be started.
   final List<int>? weekdays;
+
+  /// extra data, schedule name
+  late String name = '';
 
   /// Test if this schedule should run at the specified time.
   bool shouldRunAt(DateTime time) {
@@ -168,11 +188,27 @@ class _Cron implements Cron {
   final _schedules = <_ScheduledTask>[];
 
   @override
-  ScheduledTask schedule(Schedule schedule, Task task) {
+  int get count => _schedules.length;
+
+  @override
+  int indexWhere(bool Function(ScheduledTask) test, [int start = 0]) =>
+      _schedules.indexWhere(test, start);
+
+  @override
+  void removeAt(int index) => _schedules.removeAt(index);
+
+  @override
+  void updateAt(int i, ScheduledTask st) =>
+      _schedules[i] = st as _ScheduledTask;
+
+  @override
+  ScheduledTask schedule(Schedule schedule, Task task, [bool append = true]) {
     if (_closed) throw Exception('Closed.');
     final st = _ScheduledTask(schedule, task);
-    _schedules.add(st);
-    _scheduleNextTick();
+    if (append) {
+      _schedules.add(st);
+      _scheduleNextTick();
+    }
     return st;
   }
 
